@@ -2,7 +2,7 @@
 Virtual gateway for Zigbee Home Automation.
 
 For more details about this component, please refer to the documentation at
-https://home-assistant.io/components/zha/
+https://home-assistant.io/integrations/zha/
 """
 
 import asyncio
@@ -108,9 +108,9 @@ class ZHAGateway:
         baudrate = self._config.get(CONF_BAUDRATE, DEFAULT_BAUDRATE)
         radio_type = self._config_entry.data.get(CONF_RADIO_TYPE)
 
-        radio_details = RADIO_TYPES[radio_type][ZHA_GW_RADIO]()
-        radio = radio_details[ZHA_GW_RADIO]
-        self.radio_description = RADIO_TYPES[radio_type][ZHA_GW_RADIO_DESCRIPTION]
+        radio_details = RADIO_TYPES[radio_type]
+        radio = radio_details[ZHA_GW_RADIO]()
+        self.radio_description = radio_details[ZHA_GW_RADIO_DESCRIPTION]
         await radio.connect(usb_path, baudrate)
 
         if CONF_DATABASE in self._config:
@@ -310,7 +310,7 @@ class ZHAGateway:
 
     @callback
     def async_device_became_available(
-        self, sender, is_reply, profile, cluster, src_ep, dst_ep, tsn, command_id, args
+        self, sender, profile, cluster, src_ep, dst_ep, message
     ):
         """Handle tasks when a device becomes available."""
         self.async_update_device(sender)
